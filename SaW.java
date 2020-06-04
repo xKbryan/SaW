@@ -1,6 +1,8 @@
 import java.util.Scanner;
 import classes.Personagem;
+import classes.Inimigo;
 import classes.Estoria;
+import java.util.Random;
 
 class SaW {
   public static void main(String[] args) {
@@ -79,25 +81,71 @@ class SaW {
 
     // Receber a opção da ação feita no Prologo
 
-    do {
+    // do {
+    if (op == 1) {
+      op = ato1.cena1_6(ler);
+    } else if (op == 2) {
+      op = ato1.cena1_7(ler);
+    } else if (op == 3) {
+      op = ato1.cena1_8(ler);
+      batalha1_8(ler, jogador);
+    } else if (op == 0) {
+      System.out.println("Abrindo atributos...");
+      jogador.status();
+    } else {
+      // op = ato1.check(op);
+    }
+
+    if (op == 0) {
+      op = 4;
+    }
+    // } while (op > 0 || op < 4);
+
+  }
+
+  public static void batalha1_8 (Scanner ler, Personagem jogador) {
+    int op = 0, dado = 0;
+    Random gerador = new Random();
+    Inimigo assaltante1 = new Inimigo("Capanga 01", 5, 3, 3);
+    while(assaltante1.getVitalidade() > 0 && jogador.getVitalidade() > 0) {
+      while(op == 0) {
+        System.out.println("1 - Atacar");
+        System.out.println("2 - Tentar escapar");
+        System.out.println("0 - Ver status");
+        op = ler.nextInt();
+        if (op == 0) {
+          jogador.status();
+          assaltante1.status();
+        }
+      }
       if (op == 1) {
-        op = ato1.cena1_6(ler);
-        // Sistema de batalha
-      } else if (op == 2) {
-        op = ato1.cena1_7(ler);
-      } else if (op == 3) {
-        op = ato1.cena1_8(ler);
-      } else if (op == 0) {
-        System.out.println("Abrindo atributos...");
-        jogador.status();
-      } else {
-        // op = ato1.check(op);
+        dado = gerador.nextInt(17);
+        if (dado >= 8) {
+          assaltante1.setVitalidade(assaltante1.getVitalidade() - 1);
+          System.out.println("Acertei o ataque. Vida restante do inimigo: " + assaltante1.getVitalidade());
+        } else {
+          jogador.setVitalidade(jogador.getVitalidade() - 1);
+          System.out.println("Errei o ataque. Vida restante do jogador: " + jogador.getVitalidade());
+        }
       }
-
-      if (op == 0) {
-        op = 4;
+      if (op == 2) {
+        dado = gerador.nextInt(17);
+        if (dado == 16) {
+          System.out.println("Parabéns, você conseguiu escapar!");
+          break;
+        } else {
+          System.out.println("Sem sucesso :(");
+          jogador.setVitalidade(jogador.getVitalidade() - 1);
+          System.out.println("Tomei um pau. Vida restante: " + jogador.getVitalidade());
+        }
       }
-    } while (op > 0 || op < 4);
-
+      op = 0;
+    }
+    if (jogador.getVitalidade() <= 0) {
+      System.out.println("Você morreu");
+    } 
+    if (assaltante1.getVitalidade() <= 0) {
+      System.out.println("Assaltante morreu");
+    }
   }
 }
