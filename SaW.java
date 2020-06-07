@@ -25,7 +25,7 @@ class SaW {
     switch (classe) {
       case 1:
         niv = 6;
-        vit = 7;
+        vit = 5;
         res = 4;
         forc = 2;
         des = 4;
@@ -34,7 +34,7 @@ class SaW {
         
       case 2:
         niv = 7;
-        vit = 5;
+        vit = 4;
         res = 3;
         forc = 3;
         des = 8;
@@ -43,7 +43,7 @@ class SaW {
         
       case 3:
         niv = 8;
-        vit = 9;
+        vit = 8;
         res = 8;
         forc = 7;
         des = 2;
@@ -52,7 +52,7 @@ class SaW {
 
       case 4:
         niv = 9;
-        vit = 8;
+        vit = 7;
         res = 8;
         forc = 7;
         des = 5;
@@ -68,45 +68,28 @@ class SaW {
     jogador.setCritical(cri);
     jogador.setIniciativa(ini);
 
-    // jogador.status();
     System.out.println("Bem vindo, " + jogador.getNome());
-
-    // Fechando a instância de Scanner
-    // ler.close();
 
     // Executar o Prólogo do ato 1
     int op = ato1.prologo(ler);
 
-    System.out.println(op);
-
     // Receber a opção da ação feita no Prologo
-
-    // do {
     if (op == 1) {
       op = ato1.cena1_6(ler);
+      batalha1_6(ler, jogador, ato1);
     } else if (op == 2) {
       op = ato1.cena1_7(ler);
     } else if (op == 3) {
       op = ato1.cena1_8(ler);
-      batalha1_8(ler, jogador);
-    } else if (op == 0) {
-      System.out.println("Abrindo atributos...");
-      jogador.status();
-    } else {
-      // op = ato1.check(op);
+      batalha1_8(ler, jogador, ato1);
     }
-
-    if (op == 0) {
-      op = 4;
-    }
-    // } while (op > 0 || op < 4);
 
   }
 
-  public static void batalha1_8 (Scanner ler, Personagem jogador) {
+  public static void batalha1_6 (Scanner ler, Personagem jogador, Estoria ato1) {
     int op = 0, dado = 0;
     Random gerador = new Random();
-    Inimigo assaltante1 = new Inimigo("Capanga 01", 5, 3, 3);
+    Inimigo assaltante1 = new Inimigo("Assaltante 01", 4, 3, 3);
     while(assaltante1.getVitalidade() > 0 && jogador.getVitalidade() > 0) {
       while(op == 0) {
         System.out.println("1 - Atacar");
@@ -115,6 +98,7 @@ class SaW {
         op = ler.nextInt();
         if (op == 0) {
           jogador.status();
+          System.out.println("\n");
           assaltante1.status();
         }
       }
@@ -132,20 +116,38 @@ class SaW {
         dado = gerador.nextInt(17);
         if (dado == 16) {
           System.out.println("Parabéns, você conseguiu escapar!");
+          ato1.fim();
           break;
         } else {
           System.out.println("Sem sucesso :(");
           jogador.setVitalidade(jogador.getVitalidade() - 1);
-          System.out.println("Tomei um pau. Vida restante: " + jogador.getVitalidade());
+          System.out.println("Levastes um cascudo. Vida restante: " + jogador.getVitalidade());
         }
       }
       op = 0;
     }
     if (jogador.getVitalidade() <= 0) {
       System.out.println("Você morreu");
+      ato1.cena1_11();
     } 
     if (assaltante1.getVitalidade() <= 0) {
       System.out.println("Assaltante morreu");
+      ato1.cena1_9();
+    }
+  }
+
+  public static void batalha1_8 (Scanner ler, Personagem jogador, Estoria ato1) {
+    int dado = 0;
+    Random gerador = new Random();
+    dado = gerador.nextInt(17);
+    if (dado <= 5) {
+      System.out.println("Acertou te a adaga envenenada. Levou te 5 de dano");
+      jogador.setVitalidade(jogador.getVitalidade() - 5);
+      System.out.println("Vida restante: " + jogador.getVitalidade());
+      batalha1_6(ler, jogador, ato1);
+    } else {
+      System.out.println("Você desviou da adaga envenenada!");
+      batalha1_6(ler, jogador, ato1);
     }
   }
 }
